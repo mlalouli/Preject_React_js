@@ -17,18 +17,20 @@ import { useForm } from "react-hook-form";
 import { SingupValidation } from "@/lib/validation";
 import { z } from "zod";
 import Loader from "@/components/shared/Loader";
-import { Link } from "react-router-dom";
-import { useCreateUserAccount } from "@/lib/react-query/queriesAndMutations";
+import { Link, useNavigate } from "react-router-dom";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
  
-
-
 
 function SingupForm() {
   const { toast } = useToast();
+  const { checkAuthUser, isLoading: isUserLoading} = useUserContext();
+  const navigate = useNavigate();
 
-  const {mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccount();
+  const {mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccount();
 
-
+  const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
+   
   // 1. Define your form.
   const form = useForm<z.infer<typeof SingupValidation>>({
     resolver: zodResolver(SingupValidation),
@@ -49,7 +51,25 @@ function SingupForm() {
       return toast({ title: ' Sing up failed. Please try again.'})
     }
 
-    // const session = await signInAccount()
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    })
+
+    if (!session){
+      return toast({ title: ' Sing up failed. Please try again.'})
+    }
+
+    const isLoggedIn = await checkAuthUser();
+
+    if (isLoggedIn) {
+      form.reset();
+
+      navigate('/');
+    }
+    else{
+      return toast( {title: 'Sing up failed. Please try again.'})
+    }
   }
 
   return (
@@ -57,7 +77,7 @@ function SingupForm() {
       <div className="sm:w-420 flex-center flex-col">
         <img src="assets/images/logo.svg" alt="logo" />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">Create a new account</h2>
-        <p className="text-light-3 small-medium md:base-regular mt-2">To use Snapgram, please enter your details</p>
+        <p className="text-light-3 small-medium md:base-regular mt-2">To use 1337gram, please enter your details</p>
       
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full mt-4">
               <FormField
@@ -113,7 +133,7 @@ function SingupForm() {
                 )}
               />
               <Button type="submit" className="shad-button_primary" >
-                {isCreatingUser ? (
+                {isCreatingAccount ? (
                   <div className="flex-center gap-2">
                     <Loader /> Loading...
                   </div>
