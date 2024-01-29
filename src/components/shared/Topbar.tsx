@@ -6,9 +6,10 @@ import { useUserContext } from "@/context/AuthContext";
 import { useSignOutAccount } from "@/lib/react-query/queriesAndMutations";
 
 const Topbar = () => {
+  const { mutate: signOut, isSuccess } =
+  useSignOutAccount();
   const navigate = useNavigate();
   const { user } = useUserContext();
-  const { mutate: signOut, isSuccess } = useSignOutAccount();
 
   useEffect(() => {
     if (isSuccess) navigate(0);
