@@ -1,11 +1,32 @@
-import React from 'react'
+import { bottombarLinks } from "@/constants";
+import { Link, useLocation } from "react-router-dom"
 
 function Bottombar() {
-  return (
-    <div>
-        Bottombar
+  const { pathname } = useLocation();
 
-    </div>
+  return (
+    <section className='bottom-bar'>
+      {bottombarLinks.map((link) => {
+        const isActive = pathname === link.route;
+
+        return (
+          <Link 
+            to={link.route}
+            key={link.label} 
+            className={` ${
+              isActive && 'bg-primary-500 rounded-[10px]'
+            } flex-center`}
+          >
+            <img
+              src={link.imgURL}
+              alt={link.label}
+              className={`group-hover:invert-white ${isActive && 'invert-white'}`}
+            />
+            {link.label}
+          </Link>
+        )
+        })}
+    </section>
   )
 }
 
