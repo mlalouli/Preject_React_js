@@ -22,7 +22,6 @@ const formSchema = z.object({
   }),
 })
 
-
 const PostForm = ({ post }) => {
 
     // 1. Define your form.
@@ -67,6 +66,7 @@ const PostForm = ({ post }) => {
                   fieldChange={field.onChange}
                   mediaUrl={post?.imageUrl}
                 />
+                <FileUploader />
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
@@ -85,6 +85,7 @@ const PostForm = ({ post }) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="tags"
