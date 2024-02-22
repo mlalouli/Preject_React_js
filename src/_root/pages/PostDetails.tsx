@@ -1,4 +1,5 @@
 import Loader from '@/components/shared/Loader';
+import PostStats from '@/components/shared/PostStats';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
 import { useGetPostById } from '@/lib/react-query/queriesAndMutations'
@@ -73,7 +74,7 @@ const PostDetails = () => {
 
               <hr className="border w-full border-dark-4/80" />
 
-              <div className="small-medium lg:base-medium py-5">
+              <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
                 <p>
                     {post?.caption}
                 </p>
@@ -84,6 +85,16 @@ const PostDetails = () => {
                         </li>
                     ))}
                 </ul>
+            </div>
+            <div className='w-full'>
+              <PostStats post={{
+                $id: '',
+                $collectionId: '',
+                $databaseId: '',
+                $createdAt: '',
+                $updatedAt: '',
+                $permissions: []
+              }} userId={''} />
             </div>
             </div>
         </div>
